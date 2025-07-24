@@ -1,7 +1,7 @@
 // /api/call.js
-import axios from 'axios';
+const axios = require('axios');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
   const VONAGE_API_KEY = process.env.VONAGE_API_KEY;
   const VONAGE_API_SECRET = process.env.VONAGE_API_SECRET;
-  const FROM_NUMBER = "+35722007329"; // Your Vonage Cyprus number
+  const FROM_NUMBER = "+35722007329";
   const ANSWER_URL = `${req.headers.origin}/api/ncco`;
 
   try {
@@ -33,4 +33,8 @@ export default async function handler(req, res) {
       }
     );
 
-    res.json({ status: "Call initiated", data: response.data })
+    res.json({ status: "Call initiated", data: response.data });
+  } catch (error) {
+    res.status(500).json({ error: error.response?.data || error.message });
+  }
+};
